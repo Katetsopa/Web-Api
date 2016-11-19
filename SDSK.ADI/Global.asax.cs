@@ -1,7 +1,8 @@
 ﻿using System.Web;
 using System.Web.Http;
-using SDSK.API.Filters;
 
+
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 namespace SDSK.API
 {
     public class WebApiApplication : HttpApplication

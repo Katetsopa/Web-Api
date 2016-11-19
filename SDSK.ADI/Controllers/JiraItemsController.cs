@@ -1,14 +1,20 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using log4net;
 using SDSK.API.Model;
 
 namespace SDSK.API.Controllers
 {
     public class JiraItemsController : ApiController
-    {     
+    {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         //GET api/jiraitems/{id}
+        [Route("api/jiraitems/{id}")]
+        [HttpGet]
         public JiraItem Get(int id = 1)
         {
             var jiraItem = Data.JiraItems.SingleOrDefault(x => x.JiraItemId == id);
@@ -18,25 +24,31 @@ namespace SDSK.API.Controllers
             }
             else
             {
+                //  return NotFound();
                 var message = $"JiraItem with id = {id} not found";
+                Log.Error(message);
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
             }
         }
 
-        // POST: api/JiraItems
-        public void Post([FromBody]string value)
-        {
-            
-        }
 
-        // PUT: api/JiraItems/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
 
-        // DELETE: api/JiraItems/5
-        public void Delete(int id)
+        [Route("api/jiraitems/{id:jiraid}")]
+        [HttpGet]
+        public IHttpActionResult Get(string id)
         {
+            id = id.Substring(5);
+            int val;
+            var isNumber = Int32.TryParse(id, out val);
+            if (isNumber)
+            {
+                var model = Data.JiraItems.FirstOrDefault(j => j.JiraItemId == val);
+                if (model == null)
+                    return NotFound();
+                return Ok(model);
+            }
+            return NotFound();
         }
     }
 }
+

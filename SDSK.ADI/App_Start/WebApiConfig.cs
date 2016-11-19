@@ -2,23 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using SDSK.API.Filters;
+using System.Web.Http.Routing;
+using SDSK.API.Constraints;
 
 namespace SDSK.API
 {
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)
-        {     
-            // Web API configuration and services
+        {
+            var constraintResolver = new DefaultInlineConstraintResolver();
+            constraintResolver.ConstraintMap.Add("jiraid", typeof(JiraIdConstraint));
 
-            // Web API routes
-            config.MapHttpAttributeRoutes();
+            config.MapHttpAttributeRoutes(constraintResolver);
+
+            log4net.Config.XmlConfigurator.Configure();
 
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+            name: "JiraIdConstraintBasedApi",
+            routeTemplate: "api/jiraitems/{id:jiraid}",
+            defaults: new { controller = "jiraitems" },
+            constraints: new { id = new JiraIdConstraint() });
+
+            config.Routes.MapHttpRoute(
+            name: "DefaultApi",
+            routeTemplate: "api/{controller}/{id}",
+            defaults: new { id = RouteParameter.Optional }
             );
         }
     }

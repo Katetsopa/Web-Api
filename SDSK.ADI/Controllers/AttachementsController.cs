@@ -8,7 +8,7 @@ using SDSK.API.Model;
 
 namespace SDSK.API.Controllers
 {
-    [Route("api/mails/{id}/attachments")]
+    [RoutePrefix("api/mails/{id}/attachments")]
     public class AttachementsController : ApiController
     {
 
@@ -62,41 +62,24 @@ namespace SDSK.API.Controllers
             }
         }
 
-        //GET api/mails/{id}/attachements/{attId}? extention = { ext }
-        [Route]
-        public IEnumerable<Attachement> Get(int id, string ext)
-        {
-            //if (Data.Mails.Exists(x => x.Id == id))
-            //{
-            //    if (ext.Equals(null))
-            //        return Data.JiraItems.Where(x => x.)
-            //}
-            //else
-            //{
-            //    var message = $"Mail with id = {id} not found";
-            //    throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
-            //}
-        }
-
-
         //GET api/mails/{id}/attachements/{attId}? extention = { ext }? status = { status }
         [Route]
         public IEnumerable<Attachement> Get(int id, string ext = null, int status = 0)
         {
-            //if (Data.Mails.Exists(x => x.Id == id))
-            //{
-            //    IEnumerable<Attachement> result = Data.AttList;
-            //    if (ext.Equals(null))
-            //        result = result.Where(x => x.FileExtention == ext);
-            //    if (status != 0)
-            //        result = result.Where(x => x.StatusId == status);
-
-            //}
-            //else
-            //{
-            //    var message = $"Mail with id = {id} not found";
-            //    throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
-            //}
+            if (Data.Mails.Exists(x => x.Id == id))
+            {
+                IEnumerable<Attachement> result = Data.AttList;
+                if (ext.Equals(null))
+                    result = result.Where(x => x.FileExtention == ext);
+                if (status != 0)
+                    result = result.Where(x => x.StatusId == status);
+                return result;
+            }
+            else
+            {
+                var message = $"Mail with id = {id} not found";
+                throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
+            }
         }
 
 
