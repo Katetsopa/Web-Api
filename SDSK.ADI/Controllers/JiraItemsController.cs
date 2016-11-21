@@ -14,7 +14,6 @@ namespace SDSK.API.Controllers
 
         //GET api/jiraitems/{id}
         [Route("api/jiraitems/{id}")]
-        [HttpGet]
         public JiraItem Get(int id = 1)
         {
             var jiraItem = Data.JiraItems.SingleOrDefault(x => x.JiraItemId == id);
@@ -24,7 +23,6 @@ namespace SDSK.API.Controllers
             }
             else
             {
-                //  return NotFound();
                 var message = $"JiraItem with id = {id} not found";
                 Log.Error(message);
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
@@ -32,9 +30,8 @@ namespace SDSK.API.Controllers
         }
 
 
-
+        //GET api/jiraitems/{id:jiraid}
         [Route("api/jiraitems/{id:jiraid}")]
-        [HttpGet]
         public IHttpActionResult Get(string id)
         {
             id = id.Substring(5);

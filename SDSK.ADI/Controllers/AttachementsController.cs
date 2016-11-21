@@ -1,21 +1,24 @@
-﻿using System.Collections.Generic;
-using System.Data.Entity.Core.Metadata.Edm;
+﻿using SDSK.API.Model;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using SDSK.API.Model;
+using log4net;
+using SDSK.API.Constraints;
 
 namespace SDSK.API.Controllers
 {
-    [RoutePrefix("api/mails/{id}/attachments")]
+    [RoutePrefix("api/mails")]
+    [VersionedRoute("api/mails", 1)]
     public class AttachementsController : ApiController
     {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //GET api/mails/{id}/attachements
-        //[Route("api/mails/{id}/attachments")]
-        [Route]
-        public IEnumerable<Attachement> Get(int id)
+        [Route("{id}/attachements")]
+        [VersionedRoute("{id}/attachments", 1)]
+        public IEnumerable<Attachement> GetAttachements(int id)
         {
             if (Data.Mails.Exists(x => x.Id == id))
             {
@@ -32,17 +35,16 @@ namespace SDSK.API.Controllers
             else
             {
                 var message = $"Mail with id = {id} not found";
+                Log.Error(message);
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
             }
         }
 
 
         //GET api/mails/{id}/attachements/{attId}
-        [Route]
-    //("api/mails/{id}/attachments/{attId}")
-    public IEnumerable<Attachement> Get(int id, int attId)
+        [VersionedRoute("{id}/attachments/{attId}", 1)]
+        public IEnumerable<Attachement> Get(int id, int attId)
         {
-
             if (Data.Mails.Exists(x => x.Id == id))
             {
                 if (Data.AttList.Where(x => x.MailId == id).Where(c => c.Id == attId).Any())
@@ -52,6 +54,7 @@ namespace SDSK.API.Controllers
                 else
                 {
                     var message = $"Mail with id = {id} don't have any attachments with id = {attId}";
+                    Log.Error(message);
                     throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
                 }
             }
@@ -62,8 +65,9 @@ namespace SDSK.API.Controllers
             }
         }
 
-        //GET api/mails/{id}/attachements/{attId}? extention = { ext }? status = { status }
-        [Route]
+
+        //GET api/mails/{id}/attachements/extention = { ext }? status = { status }
+        [VersionedRoute("{id}/attachments", 1)]
         public IEnumerable<Attachement> Get(int id, string ext = null, int status = 0)
         {
             if (Data.Mails.Exists(x => x.Id == id))
@@ -78,14 +82,15 @@ namespace SDSK.API.Controllers
             else
             {
                 var message = $"Mail with id = {id} not found";
+                Log.Error(message);
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
             }
         }
 
 
+
         //PUT api/mails/{id}/attachements/{attId}
-        //[Route("api/mails/{id}/attachments/{attId}")]
-        [Route]
+        [VersionedRoute("{id}/attachements/{attId}", 1)]
         public void Put(int id, int attId, [FromBody]Attachement attach)
         {
             if (Data.Mails.Exists(x => x.Id == id))
@@ -94,6 +99,7 @@ namespace SDSK.API.Controllers
                 if (attachToUpdate.Equals(null))
                 {
                     var message = $"Attachment with id = {attId} don't exist";
+                    Log.Error(message);
                     throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
                 }
                 else
@@ -105,14 +111,15 @@ namespace SDSK.API.Controllers
             else
             {
                 var message = $"Mail with id = {id} not found";
+                Log.Error(message);
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
             }
         }
 
 
+
         //POST api/mails/{id}/attachements
-        //[Route("api/mails/{id}/attachments")]
-        [Route]
+        [VersionedRoute("{id}/attachements", 1)]
         public void Post(int id, [FromBody]Attachement attachement)
         {
             if (Data.Mails.Exists(x => x.Id == id))
@@ -124,20 +131,22 @@ namespace SDSK.API.Controllers
                 else
                 {
                     var message = "invalid input attachment";
+                    Log.Error(message);
                     throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.BadRequest, message));
                 }
             }
             else
             {
                 var message = $"Mail with id = {id} not found";
+                Log.Error(message);
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
             }
         }
 
 
+
         //DELETE api/mails/{id}/attachements/{attId}
-        //[Route("api/mails/{id}/attachments/{attId}")]
-        [Route]
+        [VersionedRoute("{id}/attachements/{attId}", 1)]
         public void Delete(int id, int attId)
         {
             if (Data.Mails.Exists(x => x.Id == id))
@@ -159,9 +168,5 @@ namespace SDSK.API.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotFound, message));
             }
         }
-
-
-        
-
     }
 }

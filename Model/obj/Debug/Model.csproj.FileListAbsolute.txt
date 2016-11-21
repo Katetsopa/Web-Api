@@ -75,4 +75,3 @@ D:\REPO\sdsk-api\Model\bin\Debug\System.Web.Http.Owin.xml
 D:\REPO\sdsk-api\Model\bin\Debug\Microsoft.Web.Infrastructure.dll
 D:\REPO\sdsk-api\Model\bin\Debug\Swashbuckle.Core.dll
 D:\REPO\sdsk-api\Model\bin\Debug\WebActivatorEx.dll
-D:\REPO\sdsk-api\Model\obj\Debug\Model.csprojResolveAssemblyReference.cache

@@ -4,7 +4,6 @@ using Swashbuckle.Application;
 using WebActivatorEx;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
-
 namespace SDSK.API
 {
     public class SwaggerConfig
